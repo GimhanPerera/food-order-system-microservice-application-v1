@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    table { border-collapse: collapse; width: 80%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    button { padding: 4px 8px; }
+  </style>
+</head>
+<body>
+
+<h2>Admin – Orders</h2>
+
+<table id="orders">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Food ID</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+async function loadOrders() {
+  const res = await fetch("http://<ip>:5002/orders");
+  const orders = await res.json();
+
+  const tbody = document.querySelector("#orders tbody");
+  tbody.innerHTML = "";
+
+  orders.forEach(o => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${o[0]}</td>
+      <td>${o[1]}</td>
+      <td>${o[2]}</td>
+      <td>${o[3]}</td>
+      <td>
+        ${o[3] === 'PENDING'
+          ? `<button onclick="completeOrder(${o[0]})">Complete</button>`
+          : '—'}
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+async function completeOrder(id) {
+  await fetch(`http://<ip>:5002/order/${id}/complete`, {
+    method: "POST"
+  });
+  loadOrders();
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>

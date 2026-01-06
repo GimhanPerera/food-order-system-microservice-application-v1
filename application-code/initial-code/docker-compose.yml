@@ -1,0 +1,72 @@
+version: "3.9"
+
+networks:
+  my-network:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:15
+    container_name: food-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - ./dbdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+  customer-backend:
+    build: ./customer-backend
+    environment:
+      DB_HOST: ${DB_HOST}
+    ports:
+      - "5001:5000"
+    restart: always
+    networks:
+      - my-network
+
+  admin-backend:
+    build: ./admin-backend
+    environment:
+      DB_HOST: ${DB_HOST}
+    ports:
+      - "5002:5000"
+    restart: always
+    networks:
+      - my-network
+
+  notification:
+    build: ./notification-service
+    environment:
+      DB_HOST: ${DB_HOST}
+    restart: always
+    networks:
+      - my-network
+
+  admin-ui:
+    build: ./admin-ui
+    ports:
+      - "8081:80"
+    depends_on:
+      - admin-backend
+    networks:
+      - my-network
+
+  customer-ui:
+    build: ./customer-ui
+    ports:
+      - "8082:80"
+    depends_on:
+      - customer-backend
+      - admin-backend
+    networks:
+      - my-network
+
+
+volumes:
+  dbdata:

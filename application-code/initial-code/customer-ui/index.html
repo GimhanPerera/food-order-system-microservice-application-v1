@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Customer UI</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 50%;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Available Foods</h1>
+  <table id="foodTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price ($)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Food rows will be added here dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    // Backend URL (use service name inside Docker network)
+    const BACKEND_URL = "http://<IP>:5001";
+
+    // Fetch food list from backend
+    async function loadFoods() {
+      const response = await fetch(`${BACKEND_URL}/foods`);
+      const foods = await response.json();
+
+      const tbody = document.querySelector("#foodTable tbody");
+      tbody.innerHTML = ""; // clear table
+
+      foods.forEach(food => {
+        const [id, name, price] = food;
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${id}</td>
+          <td>${name}</td>
+          <td>${price}</td>
+          <td><button onclick="order(${id})">Order</button></td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    // Function to order a food item
+    async function order(food_id) {
+      const response = await fetch(`${BACKEND_URL}/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ food_id, quantity: 1 })
+      });
+      if(response.ok){
+        alert("Order placed successfully!");
+      } else {
+        alert("Failed to place order.");
+      }
+    }
+
+    // Load foods when page loads
+    window.onload = loadFoods;
+  </script>
+</body>
+</html>
+

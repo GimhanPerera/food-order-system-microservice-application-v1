@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-backend
+  namespace: food-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-backend
+  template:
+    metadata:
+      labels:
+        app: customer-backend
+    spec:
+      containers:
+      - name: customer-backend
+        image: gimhan764/smsa-1-customer-backend:1.3
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: postgres-secret

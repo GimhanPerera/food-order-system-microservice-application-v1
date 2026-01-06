@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-notification
+  namespace: food-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-notification
+  template:
+    metadata:
+      labels:
+        app: app-notification
+    spec:
+      containers:
+      - name: app-notification
+        image: gimhan764/smsa-1-notification-svc:1.2
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: postgres-secret

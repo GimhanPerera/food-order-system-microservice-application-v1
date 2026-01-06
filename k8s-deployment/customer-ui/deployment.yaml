@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-ui
+  namespace: food-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: customer-ui
+  template:
+    metadata:
+      labels:
+        app: customer-ui
+    spec:
+      containers:
+      - name: customer-ui
+        image: gimhan764/smsa-1-customer-ui:1.0
+        ports:
+        - containerPort: 80
+

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: food-postgres
+  namespace: food-order
+spec:
+  serviceName: food-postgres   # headless Service name
+  replicas: 1
+  selector:
+    matchLabels:
+      app: food-postgres
+  template:
+    metadata:
+      labels:
+        app: food-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: postgres-secret
+        volumeMounts:
+        - name: init-sql
+          mountPath: /docker-entrypoint-initdb.d
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: init-sql
+        configMap:
+          name: postgres-init
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-postgres
+        resources:
+          requests:
+            storage: 2Gi

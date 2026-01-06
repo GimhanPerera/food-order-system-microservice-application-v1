@@ -1,0 +1,7 @@
+apiVersion: v2
+name: food-ordering
+description: Food Ordering Microservices Application
+type: application
+version: 0.1.0
+appVersion: "1.0"
+

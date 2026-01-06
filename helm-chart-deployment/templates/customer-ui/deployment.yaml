@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-ui
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.customerUi.replicas }}
+  selector:
+    matchLabels:
+      app: customer-ui
+  template:
+    metadata:
+      labels:
+        app: customer-ui
+    spec:
+      containers:
+      - name: customer-ui
+        image: {{ .Values.customerUi.image }}
+        ports:
+        - containerPort: 80
+

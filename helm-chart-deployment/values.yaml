@@ -1,0 +1,36 @@
+namespace: food-order
+
+adminUi:
+  image: gimhan764/smsa-1-admin-ui:1.3
+  replicas: 1
+
+customerUi:
+  image: gimhan764/smsa-1-customer-ui:1.0
+  replicas: 1
+
+adminBackend:
+  image: gimhan764/smsa-1-admin-backend:1.5
+  replicas: 1
+
+customerBackend:
+  image: gimhan764/smsa-1-customer-backend:1.3
+  replicas: 1
+
+notification:
+  image: gimhan764/smsa-1-notification-svc:1.2
+  replicas: 1
+
+database:
+  image: postgres:15 
+  storageClass: local-postgres
+  hostname: food-postgres.food-order.svc.cluster.local
+  localpath: /root/k8s-files/storage-1/postgres-new
+  storagenode: k8s-test
+
+storageclass:
+  creationenabled: true
+
+ingress:
+  enabled: true
+  host: mydomain1234.com
+

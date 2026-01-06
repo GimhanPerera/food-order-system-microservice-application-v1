@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    table { border-collapse: collapse; width: 80%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    button { padding: 4px 8px; }
+  </style>
+</head>
+<body>
+
+<h2>Admin – Orders</h2>
+
+<table id="orders">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Food ID</th>
+      <th>Quantity</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h2>Notifications</h2>
+<table id="notifications">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Message</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const BACKEND_URL = "/admin/api";
+
+/* -------------------------
+   LOAD ORDERS
+------------------------- */
+async function loadOrders() {
+  const res = await fetch(`${BACKEND_URL}/orders`);
+  const orders = await res.json();
+
+  const tbody = document.querySelector("#orders tbody");
+  tbody.innerHTML = "";
+
+  orders.forEach(o => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${o[0]}</td>
+      <td>${o[1]}</td>
+      <td>${o[2]}</td>
+      <td>${o[3]}</td>
+      <td>
+        ${o[3] === 'PENDING'
+          ? `<button onclick="completeOrder(${o[0]})">Complete</button>`
+          : '—'}
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+/* -------------------------
+   COMPLETE ORDER
+------------------------- */
+async function completeOrder(id) {
+  await fetch(`${BACKEND_URL}/order/${id}/complete`, {
+    method: "POST"
+  });
+  loadOrders();
+}
+
+/* -------------------------
+   LOAD NOTIFICATIONS
+------------------------- */
+async function loadNotifications() {
+  const res = await fetch(`${BACKEND_URL}/notifications`);
+  const notifications = await res.json();
+
+  const tbody = document.querySelector("#notifications tbody");
+  tbody.innerHTML = "";
+
+  notifications.forEach(n => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${n.id}</td>
+      <td>${n.message}</td>
+      <td>${new Date(n.created_at).toLocaleString()}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+
+/* -------------------------
+   INITIAL LOAD
+------------------------- */
+loadOrders();
+loadNotifications();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-notification
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.notification.replicas }}
+  selector:
+    matchLabels:
+      app: app-notification
+  template:
+    metadata:
+      labels:
+        app: app-notification
+    spec:
+      containers:
+      - name: app-notification
+        image: {{ .Values.notification.image }}
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: {{ include "food-ordering.fullname" . }}-config
+        - secretRef:
+            name: {{ include "food-ordering.fullname" . }}-postgres-secret

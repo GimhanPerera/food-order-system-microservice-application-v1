@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin-backend
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.adminBackend.replicas }}
+  selector:
+    matchLabels:
+      app: admin-backend
+  template:
+    metadata:
+      labels:
+        app: admin-backend
+    spec:
+      containers:
+      - name: admin-backend
+        image: {{ .Values.adminBackend.image }}
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: {{ include "food-ordering.fullname" . }}-config
+        - secretRef:
+            name: {{ include "food-ordering.fullname" . }}-postgres-secret

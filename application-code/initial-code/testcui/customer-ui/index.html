@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Customer UI</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 50%;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Available Foods</h1>
+  <table id="foodTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price ($)</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // Backend exposed via Ingress path
+    const BACKEND_URL = "/customer-api";
+
+    async function loadFoods() {
+      const response = await fetch(`${BACKEND_URL}/foods`);
+      const foods = await response.json();
+
+      const tbody = document.querySelector("#foodTable tbody");
+      tbody.innerHTML = "";
+
+      foods.forEach(food => {
+        const [id, name, price] = food;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${id}</td>
+          <td>${name}</td>
+          <td>${price}</td>
+          <td><button onclick="order(${id})">Order</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function order(food_id) {
+      const response = await fetch(`${BACKEND_URL}/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ food_id, quantity: 1 })
+      });
+
+      if (response.ok) {
+        alert("Order placed successfully!");
+      } else {
+        alert("Failed to place order.");
+      }
+    }
+
+    window.onload = loadFoods;
+  </script>
+</body>
+</html>
+
