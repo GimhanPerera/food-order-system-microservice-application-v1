@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: app-notification
-        image: {{ .Values.notification.image }}
+        image: "{{ .Values.notification.image }}:{{ .Values.notification.tag }}"
         ports:
         - containerPort: 5000
         envFrom:

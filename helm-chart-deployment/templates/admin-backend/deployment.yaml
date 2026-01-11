@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: admin-backend
-        image: {{ .Values.adminBackend.image }}
+        image: "{{ .Values.adminBackend.image }}:{{ .Values.adminBackend.tag }}"
         ports:
         - containerPort: 5000
         envFrom:

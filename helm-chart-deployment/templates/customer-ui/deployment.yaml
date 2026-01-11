@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: customer-ui
-        image: {{ .Values.customerUi.image }}
+        image: "{{ .Values.customerUi.image }}:{{ .Values.customerUi.tag }}"
         ports:
         - containerPort: 80
 

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: admin-ui
-        image: {{ .Values.adminUi.image }}
+        image: "{{ .Values.adminUi.image }}:{{ .Values.adminUi.tag }}"
         ports:
         - containerPort: 80
 
