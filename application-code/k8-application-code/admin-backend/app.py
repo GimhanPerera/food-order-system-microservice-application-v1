@@ -95,7 +95,7 @@ def notifications():
             }
             for r in rows
         ])
-
+//test text
     except Exception:
         return {"error": "Database unavailable"}, 503
 
