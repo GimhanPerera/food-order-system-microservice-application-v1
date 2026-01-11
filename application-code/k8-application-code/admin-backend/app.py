@@ -16,7 +16,7 @@ def get_db_connection():
     return psycopg2.connect(**DB_CONFIG)
 
 # -------------------------
-# GET ORDERS
+# GET ORDERS 1
 # -------------------------
 @app.route("/api/orders")
 def orders():
