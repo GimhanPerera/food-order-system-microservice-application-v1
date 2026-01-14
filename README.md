@@ -83,31 +83,6 @@ Triggered after a successful CI pipeline or manually.
 
 ---
 
-## 📁 Repository Structure
-
-```bash
-.
-├── admin-ui/
-├── admin-backend/
-├── customer-ui/
-├── customer-backend/
-├── notification-service/
-├── helm-charts/
-│   ├── admin-ui/
-│   ├── admin-backend/
-│   ├── customer-ui/
-│   ├── customer-backend/
-│   ├── notification-service/
-│   └── postgres/
-├── k8s-manifests/
-├── jenkins/
-│   ├── ci-pipeline.groovy
-│   └── cd-pipeline.groovy
-└── README.md
-```
-
----
-
 ## ▶️ How to Deploy (High Level)
 
 1. Provision a K3s cluster
