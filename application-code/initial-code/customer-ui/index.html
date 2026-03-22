@@ -44,7 +44,7 @@
 
     // Fetch food list from backend
     async function loadFoods() {
-      const response = await fetch(`${BACKEND_URL}/foods`);
+      const response = await fetch(`${BACKEND_URL}/customer-api/foods`);
       const foods = await response.json();
 
       const tbody = document.querySelector("#foodTable tbody");
@@ -68,7 +68,7 @@
 
     // Function to order a food item
     async function order(food_id) {
-      const response = await fetch(`${BACKEND_URL}/order`, {
+      const response = await fetch(`${BACKEND_URL}/customer-api/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ food_id, quantity: 1 })
