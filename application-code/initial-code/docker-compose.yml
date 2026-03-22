@@ -15,8 +15,9 @@ services:
     volumes:
       - ./db:/docker-entrypoint-initdb.d
       - ./dbdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    #Ports dont need to expose
+    #ports:
+    #  - "5432:5432"
     networks:
       - my-network
 
