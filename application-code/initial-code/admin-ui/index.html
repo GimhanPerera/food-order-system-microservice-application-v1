@@ -26,9 +26,28 @@
   <tbody></tbody>
 </table>
 
+<h2>Notifications</h2>
+<table id="notifications">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Message</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
 <script>
+
+//Use the admin-backend URL. if https cont configured, use IP with http
+const BACKEND_URL = "/api/admin";
+
+/* -------------------------
+   LOAD ORDERS
+------------------------- */
 async function loadOrders() {
-  const res = await fetch("http://<ip>:5002/orders");
+  const res = await fetch(`${BACKEND_URL}/orders`);
   const orders = await res.json();
 
   const tbody = document.querySelector("#orders tbody");
@@ -51,14 +70,44 @@ async function loadOrders() {
   });
 }
 
+/* -------------------------
+   COMPLETE ORDER
+------------------------- */
 async function completeOrder(id) {
-  await fetch(`http://<ip>:5002/order/${id}/complete`, {
+  await fetch(`${BACKEND_URL}/order/${id}/complete`, {
     method: "POST"
   });
   loadOrders();
 }
 
+/* -------------------------
+   LOAD NOTIFICATIONS
+------------------------- */
+async function loadNotifications() {
+  const res = await fetch(`${BACKEND_URL}/notifications`);
+  const notifications = await res.json();
+
+  const tbody = document.querySelector("#notifications tbody");
+  tbody.innerHTML = "";
+
+  notifications.forEach(n => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${n.id}</td>
+      <td>${n.message}</td>
+      <td>${new Date(n.created_at).toLocaleString()}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+
+/* -------------------------
+   INITIAL LOAD
+------------------------- */
 loadOrders();
+loadNotifications();
+
 </script>
 
 </body>
