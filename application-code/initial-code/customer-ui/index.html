@@ -39,8 +39,8 @@
   </table>
 
   <script>
-    // Backend URL (use service name inside Docker network)
-    const BACKEND_URL = "http://<IP>:5001";
+    // Use the customer-backend URL. if https cont configured, use IP with http
+    const BACKEND_URL = "/api/customer/";
 
     // Fetch food list from backend
     async function loadFoods() {
@@ -85,4 +85,3 @@
   </script>
 </body>
 </html>
-
