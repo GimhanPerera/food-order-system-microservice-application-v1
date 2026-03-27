@@ -1,0 +1,137 @@
+# Pre-required
+# 1. Edit the inventory.ini file and add the hosts
+# 2. SSH and test the hosts
+# 3. Docker should install and enable first
+# 4. Create /template/.env file with following configurations,
+### POSTGRES_DB=fooddb
+### POSTGRES_USER=fooduser
+### POSTGRES_PASSWORD=foodpass
+### DB_HOST=db
+# 5. Add DNS record to Domain. If need, change the domain in playbook var
+# 6. Run using "ansible-playbook -i inventory.ini playbook.yaml"
+
+- name: Deploy Food Order Microservice Application
+  hosts: dockerhosts
+  become: yes
+
+  vars:
+    domain_name: mydomain1234.shop
+    repo_url: https://github.com/GimhanPerera/food-order-system-microservice-application-v1.git
+    app_dir: /opt/food-app
+
+  tasks:
+  
+  - name: Install EPEL release package
+    dnf:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+      state: present
+      disable_gpg_check: yes
+
+  
+  - name: Refresh DNF cache
+    dnf:
+      update_cache: yes
+
+  
+  - name: Install Certbot and Nginx plugin
+    dnf:
+      name:
+        - certbot
+        - python3-certbot-nginx
+      state: present
+
+  - name: Install required packages
+    yum:
+      name:
+        - git
+        - nginx
+        - firewalld
+        - yum-utils
+      state: present
+
+
+  - name: Enable and start firewalld
+    systemd:
+      name: firewalld
+      state: started
+      enabled: yes
+
+  - name: Open HTTP port
+    firewalld:
+      service: http
+      permanent: yes
+      state: enabled
+      immediate: yes
+
+  - name: Open HTTPS port
+    firewalld:
+      service: https
+      permanent: yes
+      state: enabled
+      immediate: yes
+
+  # ---------------- Empty the dir ----------
+  - name: Remove existing app directory
+    file:
+      path: /opt/food-app
+      state: absent
+
+  - name: Recreate empty directory
+    file:
+      path: /opt/food-app
+      state: directory
+      mode: '0755'
+
+
+  # ---------------- APP SETUP ----------------
+
+  - name: Clone application repo
+    git:
+      repo: "{{ repo_url }}"
+      dest: "{{ app_dir }}/food-order-system-microservice-application-v1"
+      version: main
+      
+  - name: Create .env file for application
+    template:
+      src: .env.j2
+      dest: "{{ app_dir }}/food-order-system-microservice-application-v1/application-code/initial-code/.env"
+      mode: '0644'
+
+  - name: Run Docker Compose
+    command: docker compose up -d --build
+    args:
+      chdir: "{{ app_dir }}/food-order-system-microservice-application-v1/application-code/initial-code"
+
+  # ---------------- NGINX CONFIG ----------------
+
+  - name: Create Nginx config
+    template:
+      src: nginx.conf.j2
+      dest: /etc/nginx/conf.d/mydomain.conf
+
+  - name: Test Nginx config
+    command: nginx -t
+
+  - name: Enable and restart Nginx
+    systemd:
+      name: nginx
+      state: restarted
+      enabled: yes
+
+  # ---------------- SELINUX ----------------
+
+  - name: Temporarily disable SELinux
+    command: setenforce 0
+    ignore_errors: yes
+
+  # ---------------- SSL ----------------
+
+  - name: Obtain SSL certificate
+    command: certbot --nginx -d {{ domain_name }} --non-interactive --agree-tos -m admin@{{ domain_name }}
+    args:
+      creates: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+
+  - name: Reload Nginx after SSL
+    systemd:
+      name: nginx
+      state: reloaded
