@@ -21,13 +21,13 @@ while True:
         print("Waiting for database...")
         time.sleep(3)
 
-@app.route("/customer-api/foods")
+@app.route("/foods")
 def foods():
     cur = conn.cursor()
     cur.execute("SELECT id, name, price FROM foods WHERE available=true")
     return jsonify(cur.fetchall())
 
-@app.route("/customer-api/order", methods=["POST"])
+@app.route("/order", methods=["POST"])
 def order():
     data = request.json
     cur = conn.cursor()
@@ -38,7 +38,7 @@ def order():
     conn.commit()
     return {"message": "Order placed"}
 
-@app.route("/customer-api/health")
+@app.route("/health")
 def health():
     return "OK"
 
