@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: customer-backend
-        image: gimhan764/smsa-1-customer-backend:1.3
+        image: gimhan764/smsa-1-customer-backend:1.5
         ports:
         - containerPort: 5000
         envFrom:

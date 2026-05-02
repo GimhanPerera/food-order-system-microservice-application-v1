@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: customer-ui
-        image: gimhan764/smsa-1-customer-ui:1.0
+        image: gimhan764/smsa-1-customer-ui:1.2
         ports:
         - containerPort: 80
 
