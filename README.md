@@ -1,4 +1,4 @@
-# CI/CD for a Microservice Application 🚀
+# CI/CD pipeline for a Microservice Application 🚀
 ## food-order-system-microservice-application-v1
 
 This repository contains a **hands-on DevOps project** that demonstrates how to design, automate, secure, and deploy a **microservice-based application** using modern **CI/CD pipelines** and **Kubernetes** best practices.
@@ -22,6 +22,13 @@ All services are containerized and deployed to a **K3s Kubernetes cluster** usin
 
 > ⚠️ Note: This is a learning-focused, self-hosted Kubernetes environment designed to closely resemble real-world production workflows.
 
+---
+
+## Deployment methods
+
+1. Deploy in a Docker environment using Ansible. Follow the introductions in Ansible-Playbooks/Deploy-on-Docker/playbook.yaml
+2. Deploy in K3s using yaml definitions. Deploy the yaml files in k8s-deployment dir. Then Create the storage class and PV manually and deploy database (postgres-as-a-statefulset or postgres-as-a-deployment). Finally, Deploy the microservices.
+3. Deploy using CI/CD and helm chart.
 ---
 
 ## ⚙️ CI/CD Architecture
